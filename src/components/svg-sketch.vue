@@ -35,19 +35,19 @@
             this.sketch = new Sketch(this.$el, {
                 width: this.width,
                 height: this.height,
-                color: this.color,
-                size: this.size
+                stroke: this.color,
+                strokeWidth: this.size
             })
         },
         methods: {
             revert () {
-                this.sketch.revert()
+                this.sketch.back()
             },
             clean () {
                 this.sketch.clean()
             },
             toJSON () {
-                return this.sketch.sketchToJSON()
+                return this.sketch.sketchJson
             }
         },
         watch: {
@@ -55,10 +55,10 @@
                 this.sketch.disabled = value
             },
             size (value) {
-                this.sketch.size = value
+                this.sketch.strokeWidth = value
             },
             color (value) {
-                this.sketch.color = value
+                this.sketch.stroke = value
             }
         }
     }

@@ -4,8 +4,8 @@ const DefaultOptions = {
     width: 300,
     height: 300,
     minDistance: 3,
-    size: 3,
-    color: '#ff0028',
+    strokeWidth: 3,
+    stroke: '#ff0028',
     disabled: false
 }
 
@@ -47,40 +47,103 @@ export default class Sketch {
         return this
     }
 
-    set size (value) {
-        this.options.size = value
+    set strokeWidth (value) {
+        this.options.strokeWidth = value
     }
 
-    set color (value) {
-        this.options.color = value
+    set stroke (value) {
+        this.options.stroke = value
     }
 
     set disabled (value) {
         this.options.disabled = value
     }
 
-    createSvg (options = {}) {
+    get sketchSvg () {
+        return this.$svg.outerHTML
+    }
+
+    get sketchJson () {
+        let res
+
+        if (this.$svg && this.$svg.children && this.$svg.children.length) {
+            res = {}
+            res.type = 'svg'
+            res.version = 1.1
+            res.sv = 2
+            res.w = this.options.width
+            res.h = this.options.height
+            res.paths = []
+
+            for (let i = this.$svg.children.length; i--;) {
+                res.paths.push({
+                    d: this.$svg.children[i].getAttribute('d'),
+                    s: this.$svg.children[i].getAttribute('stroke'),
+                    sw: this.$svg.children[i].getAttribute('stroke-width')
+                })
+            }
+        }
+
+        return res
+    }
+
+    set sketchJson (json) {
+        /* eslint-disable eqeqeq */
+        if (json.sv == 2) {
+            this.sketchJsonV3 = json
+        } else {
+            this.sketchJsonV1 = json
+        }
+    }
+
+    set sketchJsonV3 (json) {
+        let svg = this.createSvg({width: json.w, height: json.h, version: json.version})
+        let paths = json.paths || []
+        let pathsHTML = ''
+
+        paths.forEach(path => {
+            let pathElement = this.createPath({strokeWidth: path.sw, stroke: path.s, d: path.d})
+            pathsHTML += pathElement.outerHTML
+        })
+
+        svg.innerHTML = pathsHTML
+    }
+
+    set sketchJsonV1 (json) {
+        let svg = this.createSvg({width: json.width, height: json.height})
+        let paths = json.paths || []
+        let pathsHTML = ''
+
+        paths.forEach(d => {
+            let pathElement = this.createPath({d, strokeWidth: DefaultOptions.strokeWidth, stroke: DefaultOptions.stroke})
+            pathsHTML += pathElement.outerHTML
+        })
+
+        svg.innerHTML = pathsHTML
+    }
+
+    createSvg ({width, height, version = 1.1}) {
         let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 
         svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
-        svg.setAttribute('version', '1.1')
-        svg.setAttribute('width', options.width)
-        svg.setAttribute('height', options.height)
+        svg.setAttribute('version', version)
+        svg.setAttribute('width', width)
+        svg.setAttribute('height', height)
 
         return svg
     }
 
-    createPath (options) {
+    createPath ({strokeWidth, stroke, d}) {
         let path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
-        path.setAttribute('stroke-width', options.size)
+        path.setAttribute('stroke-width', strokeWidth)
         path.setAttribute('stroke-linecap', 'round')
         path.setAttribute('stroke-linejoin', 'round')
-        path.setAttribute('stroke', options.color)
+        path.setAttribute('stroke', stroke)
         path.setAttribute('fill', 'none')
 
-        if (options.d) {
-            path.setAttribute('d', options.d)
+        if (d) {
+            path.setAttribute('d', d)
         }
 
         return path
@@ -189,50 +252,9 @@ export default class Sketch {
         this._temp.lineStartCoords = null
     }
 
-    revert () {
+    back () {
         if (this.$svg.children && this.$svg.children.length) {
             this.$svg.children[this.$svg.children.length - 1].remove()
-        }
-    }
-
-    sketchToJSON () {
-        let res
-
-        if (this.$svg && this.$svg.children && this.$svg.children.length) {
-            res = {}
-            res.type = 'svg'
-            res.version = '3.0'
-            res['sketch-version'] = this['sketch-version']
-            res.width = this.options.width
-            res.height = this.options.height
-            res.paths = []
-
-            for (let i = this.$svg.children.length; i--;) {
-                res.paths.push(this.$svg.children[i].getAttribute('d'))
-            }
-        }
-
-        return res
-    }
-
-    getSketchSVG (string) {
-        try {
-            let data = JSON.parse(string)
-            let options = assign({}, DefaultOptions, {
-                width: data.width,
-                height: data.height
-            })
-
-            let svg = this.createSvg(options)
-            let paths = data.paths || []
-
-            paths.forEach(d => {
-                options.d = d
-                svg.appendChild(this.createPath(options))
-            })
-            return svg
-        } catch (e) {
-            return this.createSvg()
         }
     }
 
