@@ -8,19 +8,38 @@
     export default {
         name: 'svg-sketch',
         props: {
+            /**
+             *
+             */
             disabled: Boolean,
+            /**
+             *
+             */
+
             size: {
                 type: [String, Number],
                 default: 3
             },
+
+            /**
+             *
+             */
             color: {
                 type: String,
                 default: 'red'
             },
+
+            /**
+             *
+             */
             width: {
                 type: [String, Number],
                 default: 300
             },
+
+            /**
+             *
+             */
             height: {
                 type: [String, Number],
                 default: 300
@@ -28,6 +47,9 @@
         },
         data () {
             return {
+                /**
+                 *
+                 */
                 sketch: null
             }
         },
@@ -40,30 +62,52 @@
             })
         },
         methods: {
+            /**
+             *
+             */
             revert () {
                 this.sketch.back()
             },
+
+            /**
+             *
+             */
             clean () {
                 this.sketch.clean()
             },
-            toJSON () {
+
+            /**
+             *
+             * @returns {*}
+             */
+            getJSON () {
                 return this.sketch.sketchJson
             }
         },
         watch: {
+            /**
+             *
+             * @param value
+             */
             disabled (value) {
                 this.sketch.disabled = value
             },
+
+            /**
+             *
+             * @param value
+             */
             size (value) {
                 this.sketch.strokeWidth = value
             },
+
+            /**
+             *
+             * @param value
+             */
             color (value) {
                 this.sketch.stroke = value
             }
         }
     }
 </script>
-
-<style scoped>
-
-</style>

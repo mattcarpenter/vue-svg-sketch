@@ -1,21 +1,16 @@
 import {assign} from 'es6-object-assign'
+import {getSketchJson, getCoordsByEvent, getDistance, getDirectionMove} from './utils.js'
+import defaultOptions from '../default.js'
 
-const DefaultOptions = {
-    width: 300,
-    height: 300,
-    minDistance: 3,
-    strokeWidth: 3,
-    stroke: '#ff0028',
-    disabled: false
-}
 
+/**
+ *
+ */
 export default class Sketch {
 
     constructor (element, options) {
-        this['sketch-version'] = 2
-
         this.element = element
-        this.options = assign({}, DefaultOptions, options)
+        this.options = assign({}, defaultOptions, options)
 
         this._temp = {}
 
@@ -26,6 +21,7 @@ export default class Sketch {
         this.$parent.appendChild(this.$svg)
         element.appendChild(this.$parent)
 
+        this.$parent.classList.add('svg-sketch-wrap')
         this.$parent.style.display = 'inline-block'
 
         this.listen()
@@ -33,6 +29,10 @@ export default class Sketch {
         return this
     }
 
+    /**
+     *
+     * @returns {Sketch}
+     */
     listen () {
         if (this.is_touch) {
             this.element.addEventListener('touchstart', this.beginDraw.bind(this))
@@ -47,57 +47,49 @@ export default class Sketch {
         return this
     }
 
+    /**
+     *
+     * @param value
+     */
     set strokeWidth (value) {
         this.options.strokeWidth = value
     }
 
+    /**
+     *
+     * @param value
+     */
     set stroke (value) {
         this.options.stroke = value
     }
 
+    /**
+     *
+     * @param value
+     */
     set disabled (value) {
         this.options.disabled = value
     }
 
-    get sketchSvg () {
-        return this.$svg.outerHTML
-    }
-
-    get sketchJson () {
-        let res
-
-        if (this.$svg && this.$svg.children && this.$svg.children.length) {
-            res = {}
-            res.type = 'svg'
-            res.version = 1.1
-            res.sv = 2
-            res.w = this.options.width
-            res.h = this.options.height
-            res.paths = []
-
-            for (let i = this.$svg.children.length; i--;) {
-                res.paths.push({
-                    d: this.$svg.children[i].getAttribute('d'),
-                    s: this.$svg.children[i].getAttribute('stroke'),
-                    sw: this.$svg.children[i].getAttribute('stroke-width')
-                })
-            }
-        }
-
-        return res
-    }
-
+    /**
+     *
+     * @param json
+     */
     set sketchJson (json) {
         /* eslint-disable eqeqeq */
-        if (json.sv == 2) {
+        if (json.sketchVersion == 2) {
             this.sketchJsonV3 = json
         } else {
             this.sketchJsonV1 = json
         }
     }
 
+    /**
+     *
+     * @param json
+     */
     set sketchJsonV3 (json) {
-        let svg = this.createSvg({width: json.w, height: json.h, version: json.version})
+        let svg = this.createSvg({width: json.width, height: json.height, version: json.version})
         let paths = json.paths || []
         let pathsHTML = ''
 
@@ -109,19 +101,45 @@ export default class Sketch {
         svg.innerHTML = pathsHTML
     }
 
+    /**
+     *
+     * @param json
+     */
     set sketchJsonV1 (json) {
         let svg = this.createSvg({width: json.width, height: json.height})
         let paths = json.paths || []
         let pathsHTML = ''
 
         paths.forEach(d => {
-            let pathElement = this.createPath({d, strokeWidth: DefaultOptions.strokeWidth, stroke: DefaultOptions.stroke})
+            let pathElement = this.createPath({d, strokeWidth: defaultOptions.strokeWidth, stroke: defaultOptions.stroke})
             pathsHTML += pathElement.outerHTML
         })
 
         svg.innerHTML = pathsHTML
     }
 
+    /**
+     *
+     * @returns {string}
+     */
+    get sketchSvg () {
+        return this.$svg.outerHTML
+    }
+
+    /**
+     *
+     */
+    get sketchJson () {
+        return getSketchJson(this.$svg)
+    }
+
+    /**
+     *
+     * @param width
+     * @param height
+     * @param version
+     * @returns {HTMLElement | SVGAElement | SVGCircleElement | SVGClipPathElement | SVGComponentTransferFunctionElement | SVGDefsElement | *}
+     */
     createSvg ({width, height, version = 1.1}) {
         let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 
@@ -133,6 +151,13 @@ export default class Sketch {
         return svg
     }
 
+    /**
+     *
+     * @param strokeWidth
+     * @param stroke
+     * @param d
+     * @returns {HTMLElement | SVGAElement | SVGCircleElement | SVGClipPathElement | SVGComponentTransferFunctionElement | SVGDefsElement | *}
+     */
     createPath ({strokeWidth, stroke, d}) {
         let path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
@@ -149,15 +174,23 @@ export default class Sketch {
         return path
     }
 
+    /**
+     *
+     */
     setOffset () {
         this._temp.offsetLeft = this.$parent.offsetLeft || 0
         this._temp.offsetTop = this.$parent.offsetTop || 0
     }
 
+    /**
+     *
+     * @param coords
+     * @param holdKey
+     * @returns {*}
+     */
     getCoordsByShiftKey (coords, holdKey) {
         if (holdKey) {
             this._temp.line = true
-            this._temp.lineDirection = null
 
             // если начальные координаты лини не заданы
             if (!this._temp.lineStartCoords) {
@@ -186,6 +219,10 @@ export default class Sketch {
         return coords
     }
 
+    /**
+     *
+     * @param event
+     */
     beginDraw (event) {
         if (this.options.disabled) {
             return
@@ -215,6 +252,10 @@ export default class Sketch {
         this._temp.prevCoords = coords
     }
 
+    /**
+     *
+     * @param event
+     */
     drawMove (event) {
         if (this.options.disabled || !this._temp.drawing) {
             return
@@ -238,6 +279,9 @@ export default class Sketch {
         }
     }
 
+    /**
+     *
+     */
     endDraw () {
         if (this.options.disabled) {
             return
@@ -252,18 +296,28 @@ export default class Sketch {
         this._temp.lineStartCoords = null
     }
 
+    /**
+     *
+     */
     back () {
         if (this.$svg.children && this.$svg.children.length) {
             this.$svg.children[this.$svg.children.length - 1].remove()
         }
     }
 
+    /**
+     *
+     */
     clean () {
         if (this.$svg) {
             this.$svg.innerHTML = ''
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     getCoords (event) {
         let coords = getCoordsByEvent(event)
         coords.x -= this._temp.offsetLeft
@@ -271,29 +325,4 @@ export default class Sketch {
 
         return coords
     }
-}
-
-function getCoordsByEvent (event) {
-    let coords = {x: 0, y: 0}
-
-    if (event.changedTouches) {
-        coords.x = event.changedTouches[0].pageX
-        coords.y = event.changedTouches[0].pageY
-    } else {
-        coords.x = event.layerX
-        coords.y = event.layerY
-    }
-
-    return coords
-}
-
-function getDistance (coords1, coords2) {
-    return Math.sqrt((coords2.x - coords1.x) * (coords2.x - coords1.x) + (coords2.y - coords1.y) * (coords2.y - coords1.y))
-}
-
-function getDirectionMove (coords1, coords2) {
-    let offsetX = Math.abs(coords1.x - coords2.x)
-    let offsetY = Math.abs(coords1.y - coords2.y)
-
-    return (offsetX < offsetY) ? 'y' : 'x'
 }
