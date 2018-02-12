@@ -1,6 +1,7 @@
 # vue-svg-sketch
 
 > A Vue.js component [Demo](https://serzz1990.github.io/vue-svg-sketch/)
+![Demo](https://s5o.ru/storage/dumpster/e/dc/d5994960cad803c41d8cbf95e60db.png)
 
 ## Build Setup
 
