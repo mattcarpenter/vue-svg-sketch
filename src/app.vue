@@ -72,7 +72,7 @@
         margin: 0 auto;
         height: 25px;
         display: flex;
-        background: #272750;
+        background: #403a46;
         padding: 15px 35px;
         border-radius: 0 0 10px 10px;
         color: #fff;
