@@ -89,7 +89,7 @@
              * @returns {*}
              */
             setJSON (json) {
-                return this.sketch.sketchJson = json
+                this.sketch.sketchJson = json
             }
         },
         watch: {
