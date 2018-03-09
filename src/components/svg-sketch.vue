@@ -1,5 +1,5 @@
 <template>
-    <div class="svg-sketch"></div>
+    <div class="svg-sketch" :class="{'is-disabled': disabled}"></div>
 </template>
 
 <script>

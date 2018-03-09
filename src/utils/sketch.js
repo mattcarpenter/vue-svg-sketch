@@ -89,7 +89,6 @@ export default class Sketch {
      * @param json
      */
     set sketchJsonV3 (json) {
-        let svg = this.createSvg({width: json.width, height: json.height, version: json.version})
         let paths = json.paths || []
         let pathsHTML = ''
 
@@ -98,7 +97,7 @@ export default class Sketch {
             pathsHTML += pathElement.outerHTML
         })
 
-        svg.innerHTML = pathsHTML
+        this.$svg.innerHTML = pathsHTML
     }
 
     /**
@@ -106,7 +105,6 @@ export default class Sketch {
      * @param json
      */
     set sketchJsonV1 (json) {
-        let svg = this.createSvg({width: json.width, height: json.height})
         let paths = json.paths || []
         let pathsHTML = ''
 
@@ -115,7 +113,7 @@ export default class Sketch {
             pathsHTML += pathElement.outerHTML
         })
 
-        svg.innerHTML = pathsHTML
+        this.$svg.innerHTML = pathsHTML
     }
 
     /**

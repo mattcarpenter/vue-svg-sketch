@@ -6,7 +6,7 @@
             <input v-model="color" type="color" placeholder="color"/>
             <button @click="revert">revert</button>
             <button @click="clean">clean</button>
-            <button @click="getJSON">get JSON</button>
+            <button @click="save">save</button>
         </div>
 
         <svg-sketch ref="sketch"
@@ -41,9 +41,16 @@
             clean () {
                 this.$refs.sketch.clean()
             },
-            getJSON () {
-                console.log(this.$refs.sketch.getJSON())
-                alert('See console')
+            save () {
+                let str = JSON.stringify(this.$refs.sketch.getJSON())
+                localStorage.setItem('vue-svg-sketch', str)
+            }
+        },
+        mounted () {
+            let str = localStorage.getItem('vue-svg-sketch')
+            if (str) {
+                let json = JSON.parse(str)
+                this.$refs.sketch.setJSON(json)
             }
         }
     }
