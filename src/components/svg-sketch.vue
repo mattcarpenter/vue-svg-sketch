@@ -82,6 +82,14 @@
              */
             getJSON () {
                 return this.sketch.sketchJson
+            },
+
+            /**
+             *
+             * @returns {*}
+             */
+            setJSON (json) {
+                return this.sketch.sketchJson = json
             }
         },
         watch: {

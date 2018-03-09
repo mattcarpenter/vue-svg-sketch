@@ -1,6 +1,6 @@
 {
   "name": "vue-svg-sketch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Vue.js project",
   "author": "Sergey Savin",
   "main": "dist/lib/vue-svg-sketch.min.js",
