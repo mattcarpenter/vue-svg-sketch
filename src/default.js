@@ -27,5 +27,8 @@ export default {
     /**
      *
      */
-    disabled: false
+    disabled: false,
+
+    onDrawStart: function () {},
+    onDrawStop: function () {}
 }

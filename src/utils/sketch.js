@@ -248,6 +248,10 @@ export default class Sketch {
 
         // Сохраняем координаты
         this._temp.prevCoords = coords
+
+        if (typeof this.options.onDrawStart === 'function') {
+            this.options.onDrawStart()
+        }
     }
 
     /**
@@ -292,6 +296,10 @@ export default class Sketch {
         this._temp.lineDirection = null
         this._temp.line = false
         this._temp.lineStartCoords = null
+
+        if (typeof this.options.onDrawStop === 'function') {
+            this.options.onDrawStop()
+        }
     }
 
     /**
@@ -322,5 +330,9 @@ export default class Sketch {
         coords.y -= this._temp.offsetTop
 
         return coords
+    }
+
+    destroy () {
+
     }
 }

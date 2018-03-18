@@ -58,7 +58,13 @@
                 width: this.width,
                 height: this.height,
                 stroke: this.color,
-                strokeWidth: this.size
+                strokeWidth: this.size,
+                onDrawStart: () => {
+                    this.$emit('draw-start')
+                },
+                onDrawStop: () => {
+                    this.$emit('draw-stop')
+                }
             })
         },
         methods: {
@@ -116,6 +122,9 @@
             color (value) {
                 this.sketch.stroke = value
             }
+        },
+        beforeDestroy () {
+            this.sketch.destroy()
         }
     }
 </script>

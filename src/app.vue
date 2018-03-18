@@ -10,6 +10,8 @@
         </div>
 
         <svg-sketch ref="sketch"
+                    @draw-start="onDrawStart"
+                    @draw-stop="onDrawStop"
                     :disabled="disabled"
                     :width="800"
                     :height="600"
@@ -44,6 +46,12 @@
             save () {
                 let str = JSON.stringify(this.$refs.sketch.getJSON())
                 localStorage.setItem('vue-svg-sketch', str)
+            },
+            onDrawStart () {
+                console.log('onDrawStart')
+            },
+            onDrawStop () {
+                console.log('onDrawStop')
             }
         },
         mounted () {
