@@ -20,6 +20,7 @@
     </div>
 </template>
 
+
 <script>
     import svgSketch from './components/svg-sketch'
 
@@ -63,6 +64,7 @@
         }
     }
 </script>
+
 
 <style>
     body {

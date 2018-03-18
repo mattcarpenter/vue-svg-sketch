@@ -7,7 +7,6 @@ import defaultOptions from '../default.js'
  *
  */
 export default class Sketch {
-
     constructor (element, options) {
         this.element = element
         this.options = assign({}, defaultOptions, options)
@@ -332,7 +331,5 @@ export default class Sketch {
         return coords
     }
 
-    destroy () {
-
-    }
+    destroy () {}
 }
