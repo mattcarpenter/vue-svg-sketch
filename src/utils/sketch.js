@@ -13,15 +13,10 @@ export default class Sketch {
 
         this._temp = {}
 
-        this.$parent = document.createElement('div')
         this.$svg = this.createSvg(this.options)
         this.is_touch = 'ontouchstart' in document.documentElement
 
-        this.$parent.appendChild(this.$svg)
-        element.appendChild(this.$parent)
-
-        this.$parent.classList.add('svg-sketch-wrap')
-        this.$parent.style.display = 'inline-block'
+        element.appendChild(this.$svg)
 
         this.listen()
 
@@ -175,8 +170,9 @@ export default class Sketch {
      *
      */
     setOffset () {
-        this._temp.offsetLeft = this.$parent.offsetLeft || 0
-        this._temp.offsetTop = this.$parent.offsetTop || 0
+        let rect = this.$svg.getBoundingClientRect()
+        this._temp.offsetLeft = rect.left + document.scrollingElement.scrollLeft
+        this._temp.offsetTop = rect.top + document.scrollingElement.scrollTop
     }
 
     /**

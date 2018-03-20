@@ -44,8 +44,8 @@ export function getCoordsByEvent (event) {
         coords.x = event.changedTouches[0].pageX
         coords.y = event.changedTouches[0].pageY
     } else {
-        coords.x = event.layerX
-        coords.y = event.layerY
+        coords.x = event.pageX
+        coords.y = event.pageY
     }
 
     return coords
