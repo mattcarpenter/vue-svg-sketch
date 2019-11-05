@@ -217,7 +217,6 @@ export default class Sketch {
      * @param event
      */
     beginDraw (event) {
-        debugger;
         if (this.options.disabled) {
             return
         }
@@ -281,7 +280,6 @@ export default class Sketch {
      *
      */
     endDraw () {
-        debugger;
         if (this.options.disabled) {
             return
         }
@@ -293,7 +291,7 @@ export default class Sketch {
         this._temp.line = false
         this._temp.lineStartCoords = null
 
-        if (typeof this.options.onDrawStop === 'function' && this._temp.drawing) {
+        if (typeof this.options.onDrawStop === 'function' && this._temp.drawing && this.$svg.innerHTML) {
             this.options.onDrawStop()
         }
 
