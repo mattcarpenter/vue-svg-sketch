@@ -291,8 +291,6 @@ export default class Sketch {
         this._temp.line = false
         this._temp.lineStartCoords = null
 
-        console.log('endDraw. drawing? ', this._temp.drawing)
-
         if (typeof this.options.onDrawStop === 'function' && this._temp.drawing) {
             this.options.onDrawStop()
         }
