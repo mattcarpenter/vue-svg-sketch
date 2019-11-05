@@ -18,8 +18,7 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
-    "preinstall": "npm install",
-    "install": "npm run build:lib"
+    "install": "scripts/build-for-repo-install.sh"
   },
   "dependencies": {
     "es6-object-assign": "^1.1.0",
