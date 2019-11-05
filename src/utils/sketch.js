@@ -284,7 +284,6 @@ export default class Sketch {
             return
         }
         // Обнуляем временные значения
-        this._temp.drawing = false
         this._temp.path = ''
         this._temp.offsetLeft = 0
         this._temp.offsetTop = 0
@@ -292,9 +291,11 @@ export default class Sketch {
         this._temp.line = false
         this._temp.lineStartCoords = null
 
-        if (typeof this.options.onDrawStop === 'function') {
+        if (typeof this.options.onDrawStop === 'function' && this._temp.drawing) {
             this.options.onDrawStop()
         }
+
+        this._temp.drawing = false
     }
 
     /**
