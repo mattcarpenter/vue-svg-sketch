@@ -217,6 +217,7 @@ export default class Sketch {
      * @param event
      */
     beginDraw (event) {
+        debugger;
         if (this.options.disabled) {
             return
         }
@@ -280,6 +281,7 @@ export default class Sketch {
      *
      */
     endDraw () {
+        debugger;
         if (this.options.disabled) {
             return
         }
